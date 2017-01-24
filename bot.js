@@ -81,8 +81,11 @@ bot.command('set', msg => {
   logMsg(msg);
   params = msg.message.text.split(" ");
   if(params.length == 2 && !isNaN(params[1])) {
-    var val = params[1];
+    var val = Math.floor(params[1]);
     dataService.setCount(msg.chat.id, val);
+  }
+  else {
+    val = "💥🔩☠🔧🔨⚡️\nHm, that wasn't supposed to happen. You didn't input invalid characters, did you?\nThe usage for this command is \"/set x\", where x is a number.\nAt the moment, I can only count integers, if you want to add your own number system, please feel free to do so. Just click here: /about "
   }
   logOutMsg(msg, val);
   msg.reply(val);
