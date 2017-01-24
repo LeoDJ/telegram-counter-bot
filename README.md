@@ -3,6 +3,8 @@ This bot aims to be a simple counter bot to keep a counter in a group / private 
 The uses are simply endless.  
 It's the second generation, innovation, it's absolutely amazing!
 
+It is currently online on http://t.me/countrBot
+
 ##Installation
 - copy the `config.js.sample` to `config.js` and enter your bot token
 - `npm install`
