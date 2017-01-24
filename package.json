@@ -1,0 +1,29 @@
+{
+  "name": "telegram-counter-bot",
+  "version": "1.0.0",
+  "description": "��#\u0000 \u0000t\u0000e\u0000l\u0000e\u0000g\u0000r\u0000a\u0000m\u0000-\u0000c\u0000o\u0000u\u0000n\u0000t\u0000e\u0000r\u0000-\u0000b\u0000o\u0000t\u0000\r\u0000 \u0000",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "LeoDJ",
+  "license": "MIT",
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LeoDJ/telegram-counter-bot.git"
+  },
+  "keywords": [
+    "telegram",
+    "counter",
+    "bot",
+    "telegraf"
+  ],
+  "bugs": {
+    "url": "https://github.com/LeoDJ/telegram-counter-bot/issues"
+  },
+  "homepage": "https://github.com/LeoDJ/telegram-counter-bot#readme",
+  "dependencies": {
+    "telegraf": "^3.6.4"
+  }
+}
