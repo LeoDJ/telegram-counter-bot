@@ -20,7 +20,7 @@ function userString(msg) {
 
 function logMsg(msg) {
     var from = userString(msg);
-    console.log(msg.message.text, from)
+    console.log('<', msg.message.text, from)
 }
 
 function logOutMsg(msg, text) {
@@ -28,18 +28,17 @@ function logOutMsg(msg, text) {
 }
 
 bot.command('start', msg => {
-    //console.log('start', msg.from, msg.chat);
-    //logMsg(msg); //commented out because will already get logged in courseTypeSelection
+    logMsg(msg);
     dataService.registerUser(msg);
     dataService.setCount(msg.chat.id, 0);
     var m = "Hello, I'm your personal counter bot, simply use the commands to control the counter";
     msg.reply(m);
     logOutMsg(msg, m);
+    setTimeout(() => {msg.reply(0); logOutMsg(msg, 0)}, 50); //workaround to send this message definitely as second message
 });
 
 bot.command('stop', msg => {
     logMsg(msg);
-    //dataService.setEnabled(msg.chat.id, false);
     var m = "I'm sorry, Dave, I'm afraid I can't do that.";
     logOutMsg(msg, m);
     msg.reply(m);
@@ -89,10 +88,17 @@ bot.command('set', msg => {
   msg.reply(val);
 });
 
+bot.command('about', msg => {
+  logMsg(msg);
+  var m = "This bot was created by @LeoDJ\nSource code and contact information can be found at https://github.com/LeoDJ/telegram-counter-bot";
+  logOutMsg(msg, m);
+  msg.reply(m);
+});
+
 
 bot.startPolling();
 
 
 module.exports = {
-    
+
 }
