@@ -7,15 +7,15 @@ const dataService = require('./dataService');
 const bot = new Telegraf(config.botToken);
 
 const helpMsg = `Command reference:
-start - Start bot (mandatory in groups)
-inc - Increment counter
-dec - Decrement counter
-reset - Reset counter back to 0
-set - Set counter [/set x]
-get - Show current counter
-stop - Attemt to stop bot.
-about - Show information about the bot
-help - Show this help page`;
+/start - Start bot (mandatory in groups)
+/inc - Increment counter
+/dec - Decrement counter
+/reset - Reset counter back to 0
+/set X - Set counter to the number X
+/get - Show current counter
+/stop - Attemt to stop bot
+/about - Show information about the bot
+/help - Show this help page`;
 
 const inputErrMsg = `💥 BOOM... 🔩☠🔧🔨⚡️
 Hm, that wasn't supposed to happen. You didn't input invalid characters, did you?
