@@ -6,6 +6,25 @@ const dataService = require('./dataService');
 
 const bot = new Telegraf(config.botToken);
 
+const helpMsg = `Command reference:
+start - Start bot (mandatory in groups)
+inc - Increment counter
+dec - Decrement counter
+reset - Reset counter back to 0
+set - Set counter [/set x]
+get - Show current counter
+stop - Attemt to stop bot.
+about - Show information about the bot
+help - Show this help page`;
+
+const inputErrMsg = `💥 BOOM... 🔩☠🔧🔨⚡️
+Hm, that wasn't supposed to happen. You didn't input invalid characters, did you?
+The usage for this command is \"/set x\", where x is a number.
+At the moment, I can only count integers, if you want to add your own number system, please feel free to do so. Just click here: /about `;
+
+const aboutMsg = "This bot was created by @LeoDJ\nSource code and contact information can be found at https://github.com/LeoDJ/telegram-counter-bot";
+
+
 //get username for group command handling
 bot.telegram.getMe().then((botInfo) => {
     bot.options.username = botInfo.username;
@@ -85,17 +104,22 @@ bot.command('set', msg => {
     dataService.setCount(msg.chat.id, val);
   }
   else {
-    val = "💥🔩☠🔧🔨⚡️\nHm, that wasn't supposed to happen. You didn't input invalid characters, did you?\nThe usage for this command is \"/set x\", where x is a number.\nAt the moment, I can only count integers, if you want to add your own number system, please feel free to do so. Just click here: /about "
+    val = inputErrMsg;
   }
   logOutMsg(msg, val);
   msg.reply(val);
 });
 
+bot.command('help', msg => {
+  logMsg(msg);
+  logOutMsg(msg, helpMsg);
+  msg.reply(helpMsg);
+});
+
 bot.command('about', msg => {
   logMsg(msg);
-  var m = "This bot was created by @LeoDJ\nSource code and contact information can be found at https://github.com/LeoDJ/telegram-counter-bot";
-  logOutMsg(msg, m);
-  msg.reply(m);
+  logOutMsg(msg, aboutMsg);
+  msg.reply(aboutMsg);
 });
 
 
