@@ -38,12 +38,21 @@ function getMetaData(uid, key) {
 }
 
 function setCount(uid, val) {
-  users[uid].count = val;
-  saveUsers();
+  if(users[uid]) {
+    users[uid].count = val;
+    saveUsers();
+  }
+  else {
+      console.log("[ERROR] at setCount(). User ID", uid, "does not exist.");
+  }
 }
 
 function getCount(uid) {
-  return users[uid].count;
+  if(users[uid])
+    return users[uid].count;
+  else {
+    console.log("[ERROR] at getCount(). User ID", uid, "does not exist.");
+  }
 }
 
 module.exports = {
