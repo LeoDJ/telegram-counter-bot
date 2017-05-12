@@ -20,3 +20,6 @@ stop - Attemt to stop bot.
 about - Show information about the bot
 help - Show the help message
 ```
+
+# Notes
+- `ctx` means "context"

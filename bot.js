@@ -49,190 +49,142 @@ bot.telegram.getMe().then((botInfo) => {
 
 dataService.loadUsers();
 
-function userString(msg) {
-    return JSON.stringify(msg.from.id == msg.chat.id ? msg.from : {
-        from: msg.from,
-        chat: msg.chat
+function userString(ctx) {
+    return JSON.stringify(ctx.from.id == ctx.chat.id ? ctx.from : {
+        from: ctx.from,
+        chat: ctx.chat
     });
 }
 
-function logMsg(msg) {
-    var from = userString(msg);
-    console.log('<', msg.message.text, from)
+function logMsg(ctx) {
+    var from = userString(ctx);
+    console.log('<', ctx.message.text, from)
 }
 
-function logOutMsg(msg, text) {
+function logOutMsg(ctx, text) {
     console.log('>', {
-        id: msg.chat.id
+        id: ctx.chat.id
     }, text);
 }
 
-bot.command('start', msg => {
-    logMsg(msg);
-    dataService.registerUser(msg);
-    dataService.setCount(msg.chat.id, 0);
+bot.command('start', ctx => {
+    logMsg(ctx);
+    dataService.registerUser(ctx);
+    dataService.setCount(ctx.chat.id, 0);
     var m = "Hello, I'm your personal counter bot, simply use the commands to control the counter";
-    msg.reply(m);
-    logOutMsg(msg, m);
+    ctx.reply(m);
+    logOutMsg(ctx, m);
     setTimeout(() => {
-        msg.reply(0);
-        logOutMsg(msg, 0)
+        ctx.reply(0);
+        logOutMsg(ctx, 0)
     }, 50); //workaround to send this message definitely as second message
 });
 
-bot.command('stop', msg => {
-    logMsg(msg);
+bot.command('stop', ctx => {
+    logMsg(ctx);
     var m = "I'm sorry, Dave, I'm afraid I can't do that.";
-    logOutMsg(msg, m);
-    msg.reply(m);
+    logOutMsg(ctx, m);
+    ctx.reply(m);
 });
 
-bot.command('incN', msg => {
-    logMsg(msg);
-    logOutMsg(msg, incNMsg);
-    msg.reply(incNMsg);
+bot.command(['incN', 'decN', 'getN', 'setN', 'resetN'], ctx => {
+    logMsg(ctx);
+    logOutMsg(ctx, incNMsg);
+    ctx.reply(incNMsg);
 });
 
-bot.command('help', msg => {
-    logMsg(msg);
-    logOutMsg(msg, helpMsg);
-    msg.reply(helpMsg);
+bot.command('help', ctx => {
+    logMsg(ctx);
+    logOutMsg(ctx, helpMsg);
+    ctx.reply(helpMsg);
 });
 
-bot.command('about', msg => {
-    logMsg(msg);
-    logOutMsg(msg, aboutMsg);
-    msg.reply(aboutMsg);
+bot.command('about', ctx => {
+    logMsg(ctx);
+    logOutMsg(ctx, aboutMsg);
+    ctx.reply(aboutMsg);
 });
 
-bot.hears(getRegExp('inc'), msg => {
-    logMsg(msg);
+bot.hears(getRegExp('inc'), ctx => {
+    logMsg(ctx);
     currentCommand = 'inc';
-    var m = msg.message.text.match(getRegExp(currentCommand))[0]; //filter command
+    var m = ctx.message.text.match(getRegExp(currentCommand))[0]; //filter command
     var counterId = m.substring(m.indexOf(currentCommand) + currentCommand.length) || 0; //get id of command, return 0 if not found
 
-    var val = +dataService.getCounter(msg.chat.id, counterId);
+    var val = +dataService.getCounter(ctx.chat.id, counterId);
     ++val;
-    dataService.setCounter(msg.chat.id, counterId, val);
+    dataService.setCounter(ctx.chat.id, counterId, val);
 
     var printCounterId = counterId ? "[" + counterId + "] " : "";
     val = printCounterId + val;
-    logOutMsg(msg, val);
-    msg.reply(val);
+    logOutMsg(ctx, val);
+    ctx.reply(val);
 });
 
-bot.hears(getRegExp('dec'), msg => {
-    logMsg(msg);
+bot.hears(getRegExp('dec'), ctx => {
+    logMsg(ctx);
     currentCommand = 'dec';
-    var m = msg.message.text.match(getRegExp(currentCommand))[0]; //filter command
+    var m = ctx.message.text.match(getRegExp(currentCommand))[0]; //filter command
     var counterId = m.substring(m.indexOf(currentCommand) + currentCommand.length) || 0; //get id of command, return 0 if not found
 
-    var val = +dataService.getCounter(msg.chat.id, counterId);
+    var val = +dataService.getCounter(ctx.chat.id, counterId);
     --val;
-    dataService.setCounter(msg.chat.id, counterId, val);
+    dataService.setCounter(ctx.chat.id, counterId, val);
 
     var printCounterId = counterId ? "[" + counterId + "] " : "";
     val = printCounterId + val;
-    logOutMsg(msg, val);
-    msg.reply(val);
+    logOutMsg(ctx, val);
+    ctx.reply(val);
 });
 
-bot.hears(getRegExp('reset'), msg => {
-    logMsg(msg);
+bot.hears(getRegExp('reset'), ctx => {
+    logMsg(ctx);
     currentCommand = 'reset';
-    var m = msg.message.text.match(getRegExp(currentCommand))[0]; //filter command
+    var m = ctx.message.text.match(getRegExp(currentCommand))[0]; //filter command
     var counterId = m.substring(m.indexOf(currentCommand) + currentCommand.length) || 0; //get id of command, return 0 if not found
 
     var val = 0;
-    dataService.setCounter(msg.chat.id, counterId, val);
+    dataService.setCounter(ctx.chat.id, counterId, val);
 
     var printCounterId = counterId ? "[" + counterId + "] " : "";
     val = printCounterId + val;
-    logOutMsg(msg, val);
-    msg.reply(val);
+    logOutMsg(ctx, val);
+    ctx.reply(val);
 });
 
-bot.hears(getRegExp('get'), msg => {
-    logMsg(msg);
+bot.hears(getRegExp('get'), ctx => {
+    logMsg(ctx);
     currentCommand = 'get';
-    var m = msg.message.text.match(getRegExp(currentCommand))[0]; //filter command
+    var m = ctx.message.text.match(getRegExp(currentCommand))[0]; //filter command
     var counterId = m.substring(m.indexOf(currentCommand) + currentCommand.length) || 0; //get id of command, return 0 if not found
 
-    var val = +dataService.getCounter(msg.chat.id, counterId);
+    var val = +dataService.getCounter(ctx.chat.id, counterId);
 
     var printCounterId = counterId ? "[" + counterId + "] " : "";
     val = printCounterId + val;
-    logOutMsg(msg, val);
-    msg.reply(val);
+    logOutMsg(ctx, val);
+    ctx.reply(val);
 });
 
-bot.hears(getRegExp('set'), msg => {
-    logMsg(msg);
+bot.hears(getRegExp('set'), ctx => {
+    logMsg(ctx);
     currentCommand = 'set';
-    var m = msg.message.text.match(getRegExp(currentCommand))[0]; //filter command
+    var m = ctx.message.text.match(getRegExp(currentCommand))[0]; //filter command
     var counterId = m.substring(m.indexOf(currentCommand) + currentCommand.length) || 0; //get id of command, return 0 if not found
 
-    params = msg.message.text.split(" ");
+    params = ctx.message.text.split(" ");
     if (params.length == 2 && !isNaN(params[1])) {
         var val = Math.floor(params[1]);
-        dataService.setCounter(msg.chat.id, counterId, val);
+        dataService.setCounter(ctx.chat.id, counterId, val);
         var printCounterId = counterId ? "[" + counterId + "] " : "";
         val = printCounterId + val;
     } else {
         val = inputErrMsg;
     }
 
-    logOutMsg(msg, val);
-    msg.reply(val);
+    logOutMsg(ctx, val);
+    ctx.reply(val);
 });
-
-
-/*
-bot.command('inc', msg => {
-    var val = +dataService.getCount(msg.chat.id); //convert to number with +
-    ++val;
-    dataService.setCount(msg.chat.id, val);
-    logOutMsg(msg, val);
-    msg.reply(val);
-});
-
-bot.command('dec', msg => {
-  logMsg(msg);
-  var val = +dataService.getCount(msg.chat.id);
-  --val;
-  dataService.setCount(msg.chat.id, val);
-  logOutMsg(msg, val);
-  msg.reply(val);
-});
-
-bot.command('reset', msg => {
-  logMsg(msg);
-  var val = 0;
-  dataService.setCount(msg.chat.id, val);
-  logOutMsg(msg, val);
-  msg.reply(val);
-});
-
-bot.command('get', msg => {
-  logMsg(msg);
-  var val = +dataService.getCount(msg.chat.id);
-  logOutMsg(msg, val);
-  msg.reply(val);
-});
-
-bot.command('set', msg => {
-  logMsg(msg);
-  params = msg.message.text.split(" ");
-  if(params.length == 2 && !isNaN(params[1])) {
-    var val = Math.floor(params[1]);
-    dataService.setCount(msg.chat.id, val);
-  }
-  else {
-    val = inputErrMsg;
-  }
-  logOutMsg(msg, val);
-  msg.reply(val);
-});*/
 
 
 bot.startPolling();
