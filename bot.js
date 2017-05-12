@@ -87,7 +87,7 @@ bot.command('broadcast', ctx => {
 bot.command('start', ctx => {
     logMsg(ctx);
     dataService.registerUser(ctx);
-    dataService.setCount(ctx.chat.id, 0);
+    dataService.setCounter(ctx.chat.id, '0', 0);
     var m = "Hello, I'm your personal counter bot, simply use the commands to control the counter";
     ctx.reply(m);
     logOutMsg(ctx, m);
