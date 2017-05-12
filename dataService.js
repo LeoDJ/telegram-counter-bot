@@ -37,7 +37,53 @@ function getMetaData(uid, key) {
     return users[uid].data[key];
 }
 
-function setCount(uid, val) {
+function assertCounter(uid, id) {
+    if(users[uid]) {
+        if(users[uid].counter) {
+            if(users[uid].counter[id]) {
+                if("value" in users[uid].counter[id]) {
+                    return true;
+                }
+                else {
+                    users[uid].counter[id].value = 0;
+                }
+            }
+            else {
+                users[uid].counter[id] = {};
+                users[uid].counter[id].value = 0;
+                saveUsers();
+            }
+        }
+        else {
+            users[uid].counter = {};
+            if(users[uid].count && id == '0') {//old counter detected, migrate count
+                users[uid].counter[id] = {value: users[uid].count};
+                delete users[uid].count;
+            }
+            else {
+                users[uid].counter[id] = {};
+                users[uid].counter[id].value = 0;
+            }
+            saveUsers();
+        }
+    }
+    else {
+        console.log("[ERROR] User ID", uid, "does not exist in database");
+    }
+}
+
+function setCounter(uid, id, val) {
+    assertCounter(uid, id);
+    users[uid].counter[id].value = val;
+    saveUsers();
+}
+
+function getCounter(uid, id) {
+    assertCounter(uid, id);
+    return users[uid].counter[id].value;
+}
+
+function setCount(uid, val) { //deprecated
   if(users[uid]) {
     users[uid].count = val;
     saveUsers();
@@ -47,7 +93,7 @@ function setCount(uid, val) {
   }
 }
 
-function getCount(uid) {
+function getCount(uid) { //deprecated
   if(users[uid])
     return users[uid].count;
   else {
@@ -61,6 +107,6 @@ module.exports = {
     getUser,
     setMetaData,
     getMetaData,
-    setCount,
-    getCount
+    setCounter,
+    getCounter
 };
