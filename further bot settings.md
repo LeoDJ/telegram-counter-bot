@@ -7,15 +7,15 @@ inc - Increment default counter
 inc1 - Increment counter 1
 inc2 - Increment counter 2
 inc3 - Increment counter 3
-incN - Increment counter N (replace N with any number)
+incx - Increment counter x (replace x with any number)
 dec - Decrement counter
-decN - Decrement counter N
+decx - Decrement counter x
 reset - Reset counter back to 0
-resetN - Reset counter N back to 0
-set - Set counter to x [/set x]
-setN - Set counter N to x [/setN x]
+resetx - Reset counter x back to 0
+set - Set counter to y [/set y]
+setx - Set counter x to y [/setx y]
 get - Show current counter
-getN - Show value of counter N
+getx - Show value of counter x
 stop - Attemt to stop bot.
 about - Show information about the bot
 help - Show the help message
