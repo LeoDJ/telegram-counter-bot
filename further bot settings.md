@@ -16,6 +16,7 @@ set - Set counter to y [/set y]
 setx - Set counter x to y [/setx y]
 get - Show current counter
 getx - Show value of counter x
+getall - Show all counters
 stop - Attemt to stop bot.
 about - Show information about the bot
 help - Show the help message

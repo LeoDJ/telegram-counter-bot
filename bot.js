@@ -22,6 +22,7 @@ const helpMsg = `Command reference:
 /setx - Set counter x to y [/setx y]
 /get - Show current counter
 /getx - Show value of counter x
+/getall - Show all counters
 /stop - Attemt to stop bot
 /about - Show information about the bot
 /help - Show this help page`;
@@ -120,6 +121,17 @@ bot.command('about', ctx => {
     logMsg(ctx);
     logOutMsg(ctx, aboutMsg);
     ctx.reply(aboutMsg);
+});
+
+bot.command('getall', ctx => {
+    logMsg(ctx);
+    counters = dataService.getAllCounters(ctx.chat.id);
+    msg = "";
+    Object.keys(counters).forEach(counterId => {
+        msg += '[' + counterId + '] ' + counters[counterId].value + "\n";
+    });
+    logOutMsg(ctx, msg);
+    ctx.reply(msg);
 });
 
 bot.hears(getRegExp('inc'), ctx => {

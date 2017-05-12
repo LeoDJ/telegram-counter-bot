@@ -88,6 +88,11 @@ function getCounter(uid, id) {
     return users[uid].counter[id].value;
 }
 
+function getAllCounters(uid) {
+    assertCounter(uid, '0');
+    return users[uid].counter;
+}
+
 module.exports = {
     loadUsers,
     registerUser,
@@ -95,5 +100,6 @@ module.exports = {
     setMetaData,
     getMetaData,
     setCounter,
-    getCounter
+    getCounter,
+    getAllCounters
 };
