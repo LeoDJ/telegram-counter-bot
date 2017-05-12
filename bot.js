@@ -12,6 +12,7 @@ const bot = new Telegraf(config.botToken);
 const helpMsg = `Command reference:
 /start - Start bot (mandatory in groups)
 /inc - Increment default counter
+/inc1 - Increment counter 1
 /incx - Increment counter x (replace x with any number)
 /dec - Decrement counter
 /decx - Decrement counter x
@@ -66,6 +67,22 @@ function logOutMsg(ctx, text) {
         id: ctx.chat.id
     }, text);
 }
+
+bot.command('broadcast', ctx => {
+    if(ctx.from.id == config.adminChatId) {
+        var words = ctx.message.text.split(' ');
+        words.shift(); //remove first word (which ist "/broadcast")
+        if(words.length == 0) //don't send empty message
+            return;
+        var broadcastMessage = words.join(' ');
+        var userList = dataService.getUserList();
+        console.log("Sending broadcast message to", userList.length, "users:  ", broadcastMessage);
+        userList.forEach(userId => {
+            console.log(">", {id: userId}, broadcastMessage);
+            ctx.telegram.sendMessage(userId, broadcastMessage);
+        });
+    }
+});
 
 bot.command('start', ctx => {
     logMsg(ctx);
@@ -184,23 +201,6 @@ bot.hears(getRegExp('set'), ctx => {
 
     logOutMsg(ctx, val);
     ctx.reply(val);
-});
-
-
-bot.command('broadcast', ctx => {
-    if(ctx.from.id == config.adminChatId) {
-        var words = ctx.message.text.split(' ');
-        words.shift(); //remove first word (which ist "/broadcast")
-        if(words.length == 0) //don't send empty message
-            return;
-        var broadcastMessage = words.join(' ');
-        var userList = dataService.getUserList();
-        console.log("Sending broadcast message to", userList.length, "users:  ", broadcastMessage);
-        userList.forEach(userId => {
-            console.log(">", {id: userId}, broadcastMessage);
-            ctx.telegram.sendMessage(userId, broadcastMessage);
-        });
-    }
 });
 
 
