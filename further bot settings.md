@@ -23,3 +23,4 @@ help - Show the help message
 
 # Notes
 - `ctx` means "context"
+- `/broadcast bla bla bla` send broadcast message to all users (only the admin as entered in the config is allowed to do this)

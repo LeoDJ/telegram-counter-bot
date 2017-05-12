@@ -8,6 +8,7 @@ function loadUsers() {
         if (err) throw err;
         users = JSON.parse(data);
     });
+
 }
 
 function saveUsers() {
@@ -26,6 +27,10 @@ function registerUser(msg) {
 
 function getUser(uid) {
     return users[uid];
+}
+
+function getUserList() {
+    return Object.keys(users);
 }
 
 function setMetaData(uid, key, val) {
@@ -83,28 +88,10 @@ function getCounter(uid, id) {
     return users[uid].counter[id].value;
 }
 
-function setCount(uid, val) { //deprecated
-  if(users[uid]) {
-    users[uid].count = val;
-    saveUsers();
-  }
-  else {
-      console.log("[ERROR] at setCount(). User ID", uid, "does not exist.");
-  }
-}
-
-function getCount(uid) { //deprecated
-  if(users[uid])
-    return users[uid].count;
-  else {
-    console.log("[ERROR] at getCount(). User ID", uid, "does not exist.");
-  }
-}
-
 module.exports = {
     loadUsers,
     registerUser,
-    getUser,
+    getUserList,
     setMetaData,
     getMetaData,
     setCounter,

@@ -187,6 +187,23 @@ bot.hears(getRegExp('set'), ctx => {
 });
 
 
+bot.command('broadcast', ctx => {
+    if(ctx.from.id == config.adminChatId) {
+        var words = ctx.message.text.split(' ');
+        words.shift(); //remove first word (which ist "/broadcast")
+        if(words.length == 0) //don't send empty message
+            return;
+        var broadcastMessage = words.join(' ');
+        var userList = dataService.getUserList();
+        console.log("Sending broadcast message to", userList.length, "users:  ", broadcastMessage);
+        userList.forEach(userId => {
+            console.log(">", {id: userId}, broadcastMessage);
+            ctx.telegram.sendMessage(userId, broadcastMessage);
+        });
+    }
+});
+
+
 bot.startPolling();
 
 
