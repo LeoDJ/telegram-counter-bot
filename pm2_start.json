@@ -1,6 +1,6 @@
 {
   "name": "counterBot",
-  "path": "app.js",
+  "script": "app.js",
   "autorestart": true,
   "max_restarts": 5,
   "restart_delay": 10000,
