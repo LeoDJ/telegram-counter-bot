@@ -2,6 +2,7 @@ const fs = require('fs');
 var usrFileName = "./users.json";
 
 var users = {};
+var fileLocked = false;
 
 function loadUsers() {
     fs.readFile(usrFileName, (err, data) => {
@@ -12,10 +13,15 @@ function loadUsers() {
 }
 
 function saveUsers() {
-    var json = JSON.stringify(users);
-    fs.writeFile(usrFileName, json, 'utf8', function (err) {
-        if (err) throw err;
-    })
+	if(!fileLocked){
+		fileLocked = true;
+		var json = JSON.stringify(users);
+		fs.writeFile(usrFileName, json, 'utf8', function (err) {
+			if (err) throw err;
+			fileLocked = false;
+		})
+	}
+    
 }
 
 function registerUser(msg) {
