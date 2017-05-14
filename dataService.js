@@ -9,7 +9,6 @@ function loadUsers() {
         if (err) throw err;
         users = JSON.parse(data);
     });
-
 }
 
 function saveUsers() {
@@ -21,7 +20,6 @@ function saveUsers() {
 			fileLocked = false;
 		})
 	}
-    
 }
 
 function registerUser(msg) {
@@ -80,7 +78,7 @@ function assertCounter(uid, id) {
     }
     else {
         //console.log("[ERROR] User ID", uid, "does not exist in database");
-        var usr = {enabled: true, data: {from: undefined, chat: undefined, error: "user was not initialized properly"}};
+        var usr = {enabled: true, data: {from: undefined, chat: undefined, error: "user was not initialized properly"}, counter: {"0": 0}};
         users[uid] = usr;
         saveUsers();
     }
