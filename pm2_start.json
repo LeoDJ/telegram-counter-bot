@@ -1,0 +1,8 @@
+{
+  "name": "counterBot",
+  "script": "app.js",
+  "autorestart": true,
+  "max_restarts": 5,
+  "restart_delay": 10000,
+  "log_date_format": "YYYY-MM-DD HH:mm:ss Z"
+}
