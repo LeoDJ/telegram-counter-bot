@@ -78,7 +78,7 @@ function assertCounter(uid, id) {
     }
     else {
         //console.log("[ERROR] User ID", uid, "does not exist in database");
-        var usr = {enabled: true, data: {from: undefined, chat: undefined, error: "user was not initialized properly"}, counter: {"0": 0}};
+        var usr = {enabled: true, data: {from: undefined, chat: undefined, error: "user was not initialized properly"}, counter: {"0": {"value": 1}}};
         users[uid] = usr;
         saveUsers();
     }
