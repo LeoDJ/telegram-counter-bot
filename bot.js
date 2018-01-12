@@ -18,14 +18,16 @@ const helpMsg = `Command reference:
 /decx - Decrement counter x
 /reset - Reset counter back to 0
 /resetx - Reset counter x back to 0
-/set X - Set counter to y [/set y]
-/setx - Set counter x to y [/setx y]
+/set y - Set counter to y [/set y]
+/setx y - Set counter x to y [/setx y]
 /get - Show current counter
 /getx - Show value of counter x
 /getall - Show all counters
 /stop - Attemt to stop bot
 /about - Show information about the bot
-/help - Show this help page`;
+/help - Show this help page
+
+Tip: You can also use e.g. '/inc2 5' to increase counter two by five counts.`;
 
 const inputErrMsg = `💥 BOOM... 🔩☠🔧🔨⚡️
 Hm, that wasn't supposed to happen. You didn't input invalid characters, did you?
@@ -140,8 +142,14 @@ bot.hears(getRegExp('inc'), ctx => {
     var m = ctx.message.text.match(getRegExp(currentCommand))[0]; //filter command
     var counterId = m.substring(m.indexOf(currentCommand) + currentCommand.length) || 0; //get id of command, return 0 if not found
 
+    var delta = 1;
+    params = ctx.message.text.split(" ");
+    if (params.length == 2 && !isNaN(params[1])) {
+        delta = Math.floor(params[1]);
+    }
+
     var val = +dataService.getCounter(ctx.chat.id, counterId);
-    ++val;
+    val += delta;
     dataService.setCounter(ctx.chat.id, counterId, val);
 
     var printCounterId = counterId ? "[" + counterId + "] " : "";
@@ -156,8 +164,14 @@ bot.hears(getRegExp('dec'), ctx => {
     var m = ctx.message.text.match(getRegExp(currentCommand))[0]; //filter command
     var counterId = m.substring(m.indexOf(currentCommand) + currentCommand.length) || 0; //get id of command, return 0 if not found
 
+    var delta = 1;
+    params = ctx.message.text.split(" ");
+    if (params.length == 2 && !isNaN(params[1])) {
+        delta = Math.floor(params[1]);
+    }
+
     var val = +dataService.getCounter(ctx.chat.id, counterId);
-    --val;
+    val -= delta;
     dataService.setCounter(ctx.chat.id, counterId, val);
 
     var printCounterId = counterId ? "[" + counterId + "] " : "";
