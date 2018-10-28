@@ -9,3 +9,8 @@ It is currently online on http://t.me/countrBot
 - copy the `config.js.sample` to `config.js` and enter your bot token
 - `npm install`
 - start the bot with the app.js (either use `node app.js` or use a manager like pm2)
+
+## Current project state
+Current project state: Limbo
+
+Like many other projects, it is still running, but does not get much attention other than keeping it running on my server
