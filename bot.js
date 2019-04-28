@@ -9,40 +9,26 @@ const dataService = require('./dataService');
 
 const bot = new Telegraf(config.botToken);
 
-const helpMsg = `Command reference:
-/start - Start bot (mandatory in groups)
-/inc - Increment default counter
-/inc1 - Increment counter 1
-/incx - Increment counter x (replace x with any number)
-/dec - Decrement counter
-/decx - Decrement counter x
-/reset - Reset counter back to 0
-/resetx - Reset counter x back to 0
-/set y - Set counter to y [/set y]
-/setx y - Set counter x to y [/setx y]
-/get - Show current counter
-/getx - Show value of counter x
-/getall - Show all counters
-/stop - Attemt to stop bot
-/about - Show information about the bot
-/help - Show this help page
+const helpMsg = `Comandos de referencia:
+/start - Iniciar bot (necesario en grupos)
+/caca - Aumenta tu contador de caca
+/quitacaca - Decrementa en una unidad tu contador de caca
+/modificar - Modifica el número N de cacas que ha hecho X
+/getall - Muestra las cacas de todos
+/about - Muestra la información del Cagómetro
+/help - Muestra esta página de ayuda
 
-Tip: You can also use e.g. '/inc2 5' to increase counter two by five counts.`;
+`;
 
-const inputErrMsg = `💥 BOOM... 🔩☠🔧🔨⚡️
-Hm, that wasn't supposed to happen. You didn't input invalid characters, did you?
-The usage for this command is \"/set x\", where x is a number.
-At the moment, I can only count integers, if you want to add your own number system, please feel free to do so. Just click here: /about `;
+const inputErrMsg = `Ups. No has introducido el comando bien, pero no te preocupes, te lo explico\n
+Para usar el comando modificar tienes que poner la palabra 'modificar' seguida sin espacios de tu nombre de usuario, en caso de que no esté igual escrito se creará un nuevo contador con ese nombre`;
 
-const incNMsg = `To use multiple counters, simply put the number of the counter you want to increase directly after the command like so:
-/inc1 <- this will increment counter 1
-/inc  <- this will increment the default counter (0)
-This does also work with other commands like /dec1 /reset1 /set1 /get1`;
+const incNMsg = `Bienvenido al Cagómetro`;
 
-const aboutMsg = "This bot was created by @LeoDJ\nSource code and contact information can be found at https://github.com/LeoDJ/telegram-counter-bot";
+const aboutMsg = "Este bot ha sido creado por @juandelaoliva utilizando el proyecto base de contador de  @LeoDJ\nCódigo fuente y datos de contacto se pueden encontrar en https://github.com/LeoDJ/telegram-counter-bot";
 
 function getRegExp(command) {
-    return new RegExp("/" + command + "[0-9]*\\b");
+    return new RegExp("/" + command + "[a-z,A-Z,0-9]{0,25}\\b");
 }
 
 //get username for group command handling
@@ -91,7 +77,7 @@ bot.command('start', ctx => {
     logMsg(ctx);
     dataService.registerUser(ctx);
     dataService.setCounter(ctx.chat.id, '0', 0);
-    var m = "Hello, I'm your personal counter bot, simply use the commands to control the counter";
+    var m = "Bienvenido al Cagómetro";
     ctx.reply(m);
     logOutMsg(ctx, m);
     setTimeout(() => {
@@ -102,7 +88,7 @@ bot.command('start', ctx => {
 
 bot.command('stop', ctx => {
     logMsg(ctx);
-    var m = "I'm sorry, Dave, I'm afraid I can't do that.";
+    var m = "Lo siento tío no puedo hacer eso.";
     logOutMsg(ctx, m);
     ctx.reply(m);
 });
@@ -130,17 +116,32 @@ bot.command('getall', ctx => {
     counters = dataService.getAllCounters(ctx.chat.id);
     msg = "";
     Object.keys(counters).forEach(counterId => {
-        msg += '[' + counterId + '] ' + counters[counterId].value + "\n";
+        msg += '[' + counterId + '] ' + counters[counterId].value + " 💩"+ "\n";
     });
     logOutMsg(ctx, msg);
     ctx.reply(msg);
 });
 
-bot.hears(getRegExp('inc'), ctx => {
+bot.hears(getRegExp('caca'), ctx => {
+    var from = userString(ctx);
+    var newData=JSON.parse(from).username;
+    if(newData==null){
+        newData = (JSON.parse(from).from.username);
+    }
+    if(newData==null){
+        newData = (JSON.parse(from).from.first_name);
+    }
+    if(newData=="TimelNegro" || newData=="amarlop"){
+        newData = null;
+        var val = "Lo siento mucho, pero tendrás que esperar al año que viene"
+    }else{
+
+   
+
     logMsg(ctx);
-    currentCommand = 'inc';
-    var m = ctx.message.text.match(getRegExp(currentCommand))[0]; //filter command
-    var counterId = m.substring(m.indexOf(currentCommand) + currentCommand.length) || 0; //get id of command, return 0 if not found
+    currentCommand = 'caca';
+   // var m = ctx.message.text.match(getRegExp(currentCommand))[0]; //filter command
+    var counterId = newData || 0;// m.substring(m.indexOf(currentCommand) + currentCommand.length) || 0; //get id of command, return 0 if not found
 
     var delta = 1;
     params = ctx.message.text.split(" ");
@@ -153,16 +154,31 @@ bot.hears(getRegExp('inc'), ctx => {
     dataService.setCounter(ctx.chat.id, counterId, val);
 
     var printCounterId = counterId ? "[" + counterId + "] " : "";
-    val = printCounterId + val;
+    if(val%100==0 || val%50==0){
+        val= "💩 Enhorabuena "+counterId+"! 💩\n\nHas llegado a la gran cifra de las " + val+ " cacas. Sigue esforzándote así y llegarás muy lejos!";
+    }else{
+        val = printCounterId + val + " 💩";
+    }
+
+}
+    
     logOutMsg(ctx, val);
     ctx.reply(val);
 });
 
-bot.hears(getRegExp('dec'), ctx => {
+bot.hears(getRegExp('quitacaca'), ctx => {
+    var from = userString(ctx);
+    var newData=JSON.parse(from).username;
+    if(newData==null){
+        newData = (JSON.parse(from).from.username);
+    }
+    if(newData==null){
+        newData = (JSON.parse(from).from.first_name);
+    }
     logMsg(ctx);
-    currentCommand = 'dec';
+    currentCommand = 'quitacaca';
     var m = ctx.message.text.match(getRegExp(currentCommand))[0]; //filter command
-    var counterId = m.substring(m.indexOf(currentCommand) + currentCommand.length) || 0; //get id of command, return 0 if not found
+    var counterId = newData || 0; //get id of command, return 0 if not found
 
     var delta = 1;
     params = ctx.message.text.split(" ");
@@ -175,7 +191,8 @@ bot.hears(getRegExp('dec'), ctx => {
     dataService.setCounter(ctx.chat.id, counterId, val);
 
     var printCounterId = counterId ? "[" + counterId + "] " : "";
-    val = printCounterId + val;
+    
+    val = printCounterId + val + " 💩";
     logOutMsg(ctx, val);
     ctx.reply(val);
 });
@@ -190,7 +207,7 @@ bot.hears(getRegExp('reset'), ctx => {
     dataService.setCounter(ctx.chat.id, counterId, val);
 
     var printCounterId = counterId ? "[" + counterId + "] " : "";
-    val = printCounterId + val;
+    val = printCounterId + val+ " 💩";
     logOutMsg(ctx, val);
     ctx.reply(val);
 });
@@ -204,14 +221,14 @@ bot.hears(getRegExp('get'), ctx => {
     var val = +dataService.getCounter(ctx.chat.id, counterId);
 
     var printCounterId = counterId ? "[" + counterId + "] " : "";
-    val = printCounterId + val;
+    val = printCounterId + val+ " 💩";
     logOutMsg(ctx, val);
     ctx.reply(val);
 });
 
-bot.hears(getRegExp('set'), ctx => {
+bot.hears(getRegExp('modificar'), ctx => {
     logMsg(ctx);
-    currentCommand = 'set';
+    currentCommand = 'modificar';
     var m = ctx.message.text.match(getRegExp(currentCommand))[0]; //filter command
     var counterId = m.substring(m.indexOf(currentCommand) + currentCommand.length) || 0; //get id of command, return 0 if not found
 
@@ -220,7 +237,7 @@ bot.hears(getRegExp('set'), ctx => {
         var val = Math.floor(params[1]);
         dataService.setCounter(ctx.chat.id, counterId, val);
         var printCounterId = counterId ? "[" + counterId + "] " : "";
-        val = printCounterId + val;
+        val = printCounterId + val+ " 💩";
     } else {
         val = inputErrMsg;
     }
