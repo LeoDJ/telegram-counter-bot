@@ -8,6 +8,7 @@ const config = require('./config');
 const dataService = require('./dataService');
 
 const bot = new Telegraf(config.botToken);
+const AnimationUrl1 = 'https://media.giphy.com/media/R9cQo06nQBpRe/giphy.gif'
 
 const helpMsg = `Comandos de referencia:
 /start - Iniciar bot (necesario en grupos)
@@ -78,11 +79,11 @@ bot.command('start', ctx => {
     dataService.setCounter(ctx.chat.id, '0', 0);
     var m = "Bienvenido al Cagómetro";
     ctx.reply(m);
-    logOutMsg(ctx, m);
-    setTimeout(() => {
+     logOutMsg(ctx, m);
+/*    setTimeout(() => {
         ctx.reply(0);
         logOutMsg(ctx, 0)
-    }, 50); //workaround to send this message definitely as second message
+    }, 50); */ //workaround to send this message definitely as second message
 });
 
 bot.command('stop', ctx => {
@@ -155,6 +156,10 @@ bot.hears(getRegExp('caca'), ctx => {
     var printCounterId = counterId ? "[" + counterId + "] " : "";
     if(val%100==0 || val%50==0){
         val= "💩 Enhorabuena "+counterId+"! 💩\n\nHas llegado a la gran cifra de las " + val+ " cacas. Sigue esforzándote así y llegarás muy lejos!";
+        setTimeout(() => {
+            ctx.replyWithAnimation(AnimationUrl1);
+            logOutMsg(ctx, 0)
+        }, 50);
     }else{
         val = printCounterId + val + " 💩";
     }
