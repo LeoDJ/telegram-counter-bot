@@ -13,14 +13,13 @@ const helpMsg = `Comandos de referencia:
 /start - Iniciar bot (necesario en grupos)
 /caca - Aumenta tu contador de caca
 /quitacaca - Decrementa en una unidad tu contador de caca
-/modificar - Modifica el número N de cacas que ha hecho X
 /getall - Muestra las cacas de todos
 /about - Muestra la información del Cagómetro
 /help - Muestra esta página de ayuda
 
 `;
 
-const inputErrMsg = `Ups. No has introducido el comando bien, pero no te preocupes, te lo explico\n
+const inputErrMsg = `Ups. No has introducido el comando bien, pero no te preocupes, te lo explico:\n\n
 Para usar el comando modificar tienes que poner la palabra 'modificar' seguida sin espacios de tu nombre de usuario, en caso de que no esté igual escrito se creará un nuevo contador con ese nombre`;
 
 const incNMsg = `Bienvenido al Cagómetro`;
