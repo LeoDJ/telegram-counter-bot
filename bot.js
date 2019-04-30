@@ -57,6 +57,87 @@ function logOutMsg(ctx, text) {
     }, text);
 }
 
+//---------------------------------------------KEYBOARD---------------------------------------------------------------
+const testMenu = Telegraf.Extra
+  .markdown()
+  .markup((m) => m.inlineKeyboard([
+    m.callbackButton('Test button', 'test')
+  ]))
+
+const menuPrincipal = Markup
+.keyboard([
+    ['+1 💩'], // Row1
+    ['☸ Ajustes', '🥇 Ranking'], // Row2 with 2 buttons
+    ['💰 Donar al proyecto', '👥 Compartir'] // Row3 with 3 buttons
+  ])
+.oneTime()
+.resize()
+.extra()
+
+const menuSettings = Markup
+.keyboard([
+    ['-1 💩','🔧 Modificar a lo grande'], // Row1
+    ['⬅️ Menú Principal'] // Row
+  ])
+.oneTime()
+.resize()
+.extra()
+
+
+bot.hears('☸ Ajustes', ctx => ctx.reply('💩 Menú de ajustes 💩',menuSettings))
+bot.hears('⬅️ Menú Principal', ctx => ctx.reply('💩 Menú Principal 💩',menuPrincipal))
+bot.hears('💰 Donar al proyecto', ctx => ctx.reply('💩 Puedes donar al proyecto mediante este link de Paypal 💩\n\n   paypal.me/juandelaoliva'))
+bot.hears('👥 Compartir', ctx => ctx.reply('💩 Puedes compartir este bot mediante el siguiente link 💩\n\n   telegram.me/cgmtr_bot'))
+
+//bot.hears('🔧 Modificar', ctx => ctx.replyWithPoll('2b|!2b', ['True', 'False']))
+
+
+bot.hears(/caca/i, (ctx) => ctx.reply("💩 hablando de cacas, quién va ganando? 💩"));
+bot.hears(/mierda/i, (ctx) => ctx.reply("💩 mierda? vamos allá! 💩"));
+bot.hears(/peste/i, (ctx) => ctx.reply("💩 jejeje ha dicho peste 💩"));
+
+
+bot.hears('🔧 Modificar a lo grande', (ctx) => {
+    return ctx.reply('💩 Modifica tu número de cacas a lo grande! 💩', Extra.HTML().markup((m) =>
+      m.inlineKeyboard([
+        m.callbackButton('-100', -100),
+        m.callbackButton('-10', -10),
+        m.callbackButton('-5', -5),
+        m.callbackButton('+5', 5),
+        m.callbackButton('+10', 10),
+        m.callbackButton('+100', 100)
+      ])))
+  })
+
+  bot.on('callback_query', (ctx) => {
+    var from = userString(ctx);
+    var newData=JSON.parse(from).username;
+    if(newData==null){
+        newData = (JSON.parse(from).from.username);
+    }
+    if(newData==null){
+        newData = (JSON.parse(from).from.first_name);
+    }
+    var counterId = newData || 0;
+
+    var val = +dataService.getCounter(ctx.chat.id, counterId);
+    var delta = parseInt(ctx.callbackQuery.data);
+
+
+    val = val + delta;
+    dataService.setCounter(ctx.chat.id, counterId, val);
+
+    var printCounterId = counterId ? "[" + counterId + "] " : "";
+    val = printCounterId + val + " 💩";
+
+    console.log(ctx.callbackQuery.data)
+    logOutMsg(ctx, val);
+    ctx.reply(val);
+  })
+
+
+//-----------------------------------------------------------------------------------------------------------------------------------
+
 bot.command('broadcast', ctx => {
     if(ctx.from.id == config.adminChatId) {
         var words = ctx.message.text.split(' ');
@@ -76,19 +157,19 @@ bot.command('broadcast', ctx => {
 bot.command('start', ctx => {
     logMsg(ctx);
     dataService.registerUser(ctx);
-    dataService.setCounter(ctx.chat.id, '0', 0);
-    var m = "Bienvenido al Cagómetro";
+   // dataService.setCounter(ctx.chat.id, '0', 0);
+    var m = "💩 Bienvenido al Cagómetro! 💩";
     ctx.reply(m);
+   
      logOutMsg(ctx, m);
-/*    setTimeout(() => {
-        ctx.reply(0);
-        logOutMsg(ctx, 0)
-    }, 50); */ //workaround to send this message definitely as second message
+    setTimeout(() => {
+      ctx.reply("💩 Usa los botones para gestionar tus cacas! 💩",menuPrincipal);
+    }, 50);  //workaround to send this message definitely as second message
 });
 
 bot.command('stop', ctx => {
     logMsg(ctx);
-    var m = "Lo siento tío no puedo hacer eso.";
+    var m = "💩 Lo siento mucho, pero no puedo hacer eso. 💩";
     logOutMsg(ctx, m);
     ctx.reply(m);
 });
@@ -111,18 +192,22 @@ bot.command('about', ctx => {
     ctx.reply(aboutMsg);
 });
 
-bot.command('getall', ctx => {
+bot.hears(('🥇 Ranking'), ctx => {
     logMsg(ctx);
     counters = dataService.getAllCounters(ctx.chat.id);
+    console.log("Esto son los counters", counters);
+    if(counters == null){
+        ctx.reply("💩 Nadie ha registrado ninguna caca todavía 💩")
+    }else{
     msg = "";
     Object.keys(counters).forEach(counterId => {
         msg += '[' + counterId + '] ' + counters[counterId].value + " 💩"+ "\n";
     });
     logOutMsg(ctx, msg);
-    ctx.reply(msg);
+    ctx.reply(msg);}
 });
 
-bot.hears(getRegExp('caca'), ctx => {
+bot.hears(('+1 💩'), ctx => {
     var from = userString(ctx);
     var newData=JSON.parse(from).username;
     if(newData==null){
@@ -154,7 +239,7 @@ bot.hears(getRegExp('caca'), ctx => {
     dataService.setCounter(ctx.chat.id, counterId, val);
 
     var printCounterId = counterId ? "[" + counterId + "] " : "";
-    if(val%100==0 || val%50==0){
+    if(val!=0 && val%50==0){
         val= "💩 Enhorabuena "+counterId+"! 💩\n\nHas llegado a la gran cifra de las " + val+ " cacas. Sigue esforzándote así y llegarás muy lejos!";
         setTimeout(() => {
             ctx.replyWithAnimation(AnimationUrl1);
@@ -170,7 +255,7 @@ bot.hears(getRegExp('caca'), ctx => {
     ctx.reply(val);
 });
 
-bot.hears(getRegExp('quitacaca'), ctx => {
+bot.hears(('-1 💩'), ctx => {
     var from = userString(ctx);
     var newData=JSON.parse(from).username;
     if(newData==null){
@@ -181,7 +266,7 @@ bot.hears(getRegExp('quitacaca'), ctx => {
     }
     logMsg(ctx);
     currentCommand = 'quitacaca';
-    var m = ctx.message.text.match(getRegExp(currentCommand))[0]; //filter command
+    //var m = ctx.message.text.match(getRegExp(currentCommand))[0]; //filter command
     var counterId = newData || 0; //get id of command, return 0 if not found
 
     var delta = 1;
@@ -201,20 +286,20 @@ bot.hears(getRegExp('quitacaca'), ctx => {
     ctx.reply(val);
 });
 
-bot.hears(getRegExp('reset'), ctx => {
-    logMsg(ctx);
-    currentCommand = 'reset';
-    var m = ctx.message.text.match(getRegExp(currentCommand))[0]; //filter command
-    var counterId = m.substring(m.indexOf(currentCommand) + currentCommand.length) || 0; //get id of command, return 0 if not found
+// bot.hears(getRegExp('reset'), ctx => {
+//     logMsg(ctx);
+//     currentCommand = 'reset';
+//     var m = ctx.message.text.match(getRegExp(currentCommand))[0]; //filter command
+//     var counterId = m.substring(m.indexOf(currentCommand) + currentCommand.length) || 0; //get id of command, return 0 if not found
 
-    var val = 0;
-    dataService.setCounter(ctx.chat.id, counterId, val);
+//     var val = 0;
+//     dataService.setCounter(ctx.chat.id, counterId, val);
 
-    var printCounterId = counterId ? "[" + counterId + "] " : "";
-    val = printCounterId + val+ " 💩";
-    logOutMsg(ctx, val);
-    ctx.reply(val);
-});
+//     var printCounterId = counterId ? "[" + counterId + "] " : "";
+//     val = printCounterId + val+ " 💩";
+//     logOutMsg(ctx, val);
+//     ctx.reply(val);
+// });
 
 bot.hears(getRegExp('get'), ctx => {
     logMsg(ctx);

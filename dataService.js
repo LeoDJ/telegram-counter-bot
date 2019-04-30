@@ -96,7 +96,6 @@ function getCounter(uid, id) {
 }
 
 function getAllCounters(uid) {
-    assertCounter(uid, '0');
     return users[uid].counter;
 }
 

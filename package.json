@@ -24,6 +24,7 @@
   },
   "homepage": "https://github.com/LeoDJ/telegram-counter-bot#readme",
   "dependencies": {
-    "telegraf": "^3.6.4"
+    "telegraf": "^3.6.4",
+    "telegraf-inline-menu": "^3.5.2"
   }
 }
