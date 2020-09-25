@@ -9,3 +9,4 @@ services:
     volumes:
       - ./:/home/node/app
     command: "npm start"
+    restart: unless-stopped

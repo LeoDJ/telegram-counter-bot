@@ -92,7 +92,12 @@ function setCounter(uid, id, val) {
 
 function getCounter(uid, id) {
     assertCounter(uid, id);
-    return users[uid].counter[id].value;
+    try {
+        return users[uid].counter[id].value;
+    }
+    catch (e) {
+        return 0;
+    }
 }
 
 function getAllCounters(uid) {
