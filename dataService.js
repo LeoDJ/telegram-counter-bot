@@ -1,4 +1,5 @@
 const fs = require('fs');
+const diskusage = require('diskusage');
 var usrFileName = "./users.json";
 
 var users = {};
@@ -11,14 +12,32 @@ function loadUsers() {
     });
 }
 
+async function getFreeMB() {
+    try {
+        const info = await diskusage.check('/');
+        return info.available / 1024 / 1024;
+    }
+    catch (err) {
+        console.error(err);
+        return undefined;
+    }
+}
+
 function saveUsers() {
 	if(!fileLocked){
-		fileLocked = true;
-		var json = JSON.stringify(users);
-		fs.writeFile(usrFileName, json, 'utf8', function (err) {
-			if (err) throw err;
-			fileLocked = false;
-		})
+        getFreeMB().then(free => {
+            if(free > 100) {
+                fileLocked = true;
+                var json = JSON.stringify(users);
+                fs.writeFile(usrFileName, json, 'utf8', function (err) {
+                    if (err) console.trace(err);
+                    fileLocked = false;
+                });
+            }
+            else {
+                console.log(`Error: can't save user file. Not enough free space left on device (${free} MB)`);
+            }
+        });
 	}
 }
 
