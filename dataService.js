@@ -124,6 +124,12 @@ function getAllCounters(uid) {
     return users[uid].counter;
 }
 
+function setName(uid, id, name) {
+    assertCounter(uid, id);
+    users[uid].counter[id].name = name;
+    saveUsers();
+}
+
 module.exports = {
     loadUsers,
     registerUser,
@@ -132,5 +138,6 @@ module.exports = {
     getMetaData,
     setCounter,
     getCounter,
-    getAllCounters
+    getAllCounters,
+    setName
 };

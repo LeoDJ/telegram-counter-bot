@@ -10,6 +10,7 @@ inc3 - Increment counter 3
 incx - Increment counter x (replace x with any number)
 dec - Decrement counter
 decx - Decrement counter x
+namex - Name a specific counter
 reset - Reset counter back to 0
 resetx - Reset counter x back to 0
 set - Set counter to y [/set y]
