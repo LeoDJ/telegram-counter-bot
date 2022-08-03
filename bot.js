@@ -16,6 +16,7 @@ const helpMsg = `Command reference:
 /incx - Increment counter x (replace x with any number)
 /dec - Decrement counter
 /decx - Decrement counter x
+/namex - Name a counter for the overview
 /reset - Reset counter back to 0
 /resetx - Reset counter x back to 0
 /set y - Set counter to y [/set y]
@@ -71,6 +72,10 @@ function logOutMsg(ctx, text) {
     }, text);
 }
 
+function nameForCounter(counters, counterId) {
+    return (counters[counterId].name === undefined) ? counterId : counters[counterId].name;
+}
+
 bot.command('broadcast', ctx => {
     if(ctx.from.id == config.adminChatId) {
         var words = ctx.message.text.split(' ');
@@ -107,7 +112,7 @@ bot.command('stop', ctx => {
     ctx.reply(m);
 });
 
-bot.command(['incx', 'decx', 'getx', 'setx', 'resetx'], ctx => {
+bot.command(['incx', 'decx', 'getx', 'setx', 'resetx', 'namex'], ctx => {
     logMsg(ctx);
     logOutMsg(ctx, incNMsg);
     ctx.reply(incNMsg);
@@ -130,7 +135,12 @@ bot.command('getall', ctx => {
     counters = dataService.getAllCounters(ctx.chat.id);
     msg = "";
     Object.keys(counters).forEach(counterId => {
-        msg += '[' + counterId + '] ' + counters[counterId].value + "\n";
+        var name = nameForCounter(counters, counterId);
+        if (name !== counterId) {
+            msg += '[' + counterId + ']';
+        }
+        msg += '[' + name + '] ';
+        msg += counters[counterId].value + "\n";
     });
     logOutMsg(ctx, msg);
     ctx.reply(msg);
@@ -152,7 +162,8 @@ bot.hears(getRegExp('inc'), ctx => {
     val += delta;
     dataService.setCounter(ctx.chat.id, counterId, val);
 
-    var printCounterId = counterId ? "[" + counterId + "] " : "";
+    var name = nameForCounter(dataService.getAllCounters(ctx.chat.id), counterId);
+    var printCounterId = counterId ? "[" + name + "] " : "";
     val = printCounterId + val;
     logOutMsg(ctx, val);
     ctx.reply(val);
@@ -174,7 +185,8 @@ bot.hears(getRegExp('dec'), ctx => {
     val -= delta;
     dataService.setCounter(ctx.chat.id, counterId, val);
 
-    var printCounterId = counterId ? "[" + counterId + "] " : "";
+    var name = nameForCounter(dataService.getAllCounters(ctx.chat.id), counterId);
+    var printCounterId = counterId ? "[" + name + "] " : "";
     val = printCounterId + val;
     logOutMsg(ctx, val);
     ctx.reply(val);
@@ -189,7 +201,8 @@ bot.hears(getRegExp('reset'), ctx => {
     var val = 0;
     dataService.setCounter(ctx.chat.id, counterId, val);
 
-    var printCounterId = counterId ? "[" + counterId + "] " : "";
+    var name = nameForCounter(dataService.getAllCounters(ctx.chat.id), counterId);
+    var printCounterId = counterId ? "[" + name + "] " : "";
     val = printCounterId + val;
     logOutMsg(ctx, val);
     ctx.reply(val);
@@ -203,7 +216,8 @@ bot.hears(getRegExp('get'), ctx => {
 
     var val = +dataService.getCounter(ctx.chat.id, counterId);
 
-    var printCounterId = counterId ? "[" + counterId + "] " : "";
+    var name = nameForCounter(dataService.getAllCounters(ctx.chat.id), counterId);
+    var printCounterId = counterId ? "[" + name + "] " : "";
     val = printCounterId + val;
     logOutMsg(ctx, val);
     ctx.reply(val);
@@ -219,7 +233,8 @@ bot.hears(getRegExp('set'), ctx => {
     if (params.length == 2 && !isNaN(params[1])) {
         var val = Math.floor(params[1]);
         dataService.setCounter(ctx.chat.id, counterId, val);
-        var printCounterId = counterId ? "[" + counterId + "] " : "";
+        var name = nameForCounter(dataService.getAllCounters(ctx.chat.id), counterId);
+        var printCounterId = counterId ? "[" + name + "] " : "";
         val = printCounterId + val;
     } else {
         val = inputErrMsg;
@@ -229,6 +244,27 @@ bot.hears(getRegExp('set'), ctx => {
     ctx.reply(val);
 });
 
+bot.hears(getRegExp('name'), ctx => {
+    logMsg(ctx);
+    currentCommand = 'name';
+    var m = ctx.message.text.match(getRegExp(currentCommand))[0]; //filter command
+    var counterId = m.substring(m.indexOf(currentCommand) + currentCommand.length) || 0; //get id of command, return 0 if not found
+
+    params = ctx.message.text.split(" ");
+    console.log(params);
+    if (params.length == 2) {
+        var name = params[1];
+        dataService.setName(ctx.chat.id, counterId, name);
+        var name = nameForCounter(dataService.getAllCounters(ctx.chat.id), counterId);
+        var printCounterId = counterId ? "[" + name + "] " : "";
+        val = printCounterId + name;
+    } else {
+        val = inputErrMsg;
+    }
+
+    logOutMsg(ctx, val);
+    ctx.reply(val);
+});
 
 bot.startPolling();
 
